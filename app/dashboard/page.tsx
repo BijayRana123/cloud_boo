@@ -1,6 +1,7 @@
 'use client';
 
 import Layout from '@/components/layout/Layout';
+import QuickLinks from '@/components/layout/QuickLinks';
 import { useSession } from 'next-auth/react';
 
 export default function DashboardPage() {
@@ -8,6 +9,7 @@ export default function DashboardPage() {
 
   return (
     <Layout>
+      <QuickLinks />
       <div className="space-y-6">
         {/* Welcome Section */}
         <div className="bg-white shadow rounded-lg p-6">
@@ -20,7 +22,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Quick Actions */}
-        <div className="bg-white shadow rounded-lg p-6">
+        {/* <div className="bg-white shadow rounded-lg p-6">
           <h3 className="text-lg font-medium text-gray-900 mb-4">Quick Actions</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <button className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">
@@ -36,7 +38,7 @@ export default function DashboardPage() {
               Manage Stock
             </button>
           </div>
-        </div>
+        </div> */}
 
         {/* Quick Stats */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

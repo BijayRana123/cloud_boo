@@ -4,6 +4,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import Navbar from './Navbar';
+import Sidebar1 from './Sidebar1';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -32,9 +33,13 @@ export default function Layout({ children }: LayoutProps) {
       <Navbar />
       
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        {children}
-      </main>
+      <div className="flex">
+        <Sidebar1 />
+        <main className="flex-1 p-6 overflow-auto">
+          {children}
+        </main>
+      </div>
+      
     </div>
   );
 } 
