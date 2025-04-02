@@ -37,4 +37,12 @@ async function connectDB() {
   return cached.conn;
 }
 
-export default connectDB; 
+export { connectDB };
+
+// Add global mongoose type
+declare global {
+  var mongoose: {
+    conn: typeof mongoose | null;
+    promise: Promise<typeof mongoose> | null;
+  };
+}

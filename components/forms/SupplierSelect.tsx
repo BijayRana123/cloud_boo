@@ -13,10 +13,11 @@ interface Supplier {
 }
 
 interface SupplierSelectProps {
-  onSelect: (supplier: Supplier) => void
+  onSelect?: (supplier: Supplier) => void
+  onSupplierSubmit?: (supplier: Supplier) => void
 }
 
-export default function SupplierSelect({ onSelect }: SupplierSelectProps) {
+export default function SupplierSelect({ onSelect, onSupplierSubmit }: SupplierSelectProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [suppliers, setSuppliers] = useState<Supplier[]>([])
@@ -55,8 +56,12 @@ export default function SupplierSelect({ onSelect }: SupplierSelectProps) {
       if (!response.ok) throw new Error('Failed to create supplier')
 
       const supplier = await response.json()
-      await fetchSuppliers() // Refresh the suppliers list
-      handleSelectSupplier(supplier)
+      if (onSupplierSubmit) {
+        onSupplierSubmit(supplier)
+      } else {
+        await fetchSuppliers() // Refresh the suppliers list
+        if (onSelect) handleSelectSupplier(supplier)
+      }
       setIsModalOpen(false)
       setIsOpen(false)
       setNewSupplier({ // Reset form
@@ -75,7 +80,7 @@ export default function SupplierSelect({ onSelect }: SupplierSelectProps) {
 
   const handleSelectSupplier = (supplier: Supplier) => {
     setSelectedSupplier(supplier)
-    onSelect(supplier)
+    if (onSelect) onSelect(supplier)
     setIsOpen(false)
   }
 
@@ -135,7 +140,7 @@ export default function SupplierSelect({ onSelect }: SupplierSelectProps) {
                 <X size={24} />
               </button>
             </div>
-
+            
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700">Name *</label>
@@ -199,13 +204,22 @@ export default function SupplierSelect({ onSelect }: SupplierSelectProps) {
                 </div>
               </div>
 
-              <button
-                type="button"
-                onClick={handleAddNewSupplier}
-                className="mt-4 w-full rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-              >
-                Save
-              </button>
+              <div className="flex justify-end space-x-3">
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleAddNewSupplier()}
+                  className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+                >
+                  Save
+                </button>
+              </div>
             </div>
           </div>
         </div>
