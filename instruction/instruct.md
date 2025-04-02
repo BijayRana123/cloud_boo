@@ -6,7 +6,7 @@
 ### **Description**
 This Cloud-Based Accounting System is designed for businesses in Nepal to automate and streamline financial operations, including invoicing, tax filing, payroll, VAT calculations, and financial reporting. The system will be accessible from anywhere through a secure cloud-based platform.
 
-The app will use **Next.js** for the frontend, **MongoDB, Express, and Node.js** as the backend, **ShadCN** for UI components, and **Tailwind CSS** for styling.
+The app will use **Next.js** for the frontend, **MongoDB, Express, and Node.js** as the backend, **ShadCN, lucid-react** for UI components, and **Tailwind CSS** for styling.
 
 ### **Goals**
 - Secure, scalable, and user-friendly accounting solution.
