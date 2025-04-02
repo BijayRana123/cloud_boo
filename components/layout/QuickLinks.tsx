@@ -7,7 +7,7 @@ interface QuickLinkProps {
   title: string
   category: string
   icon: React.ReactNode
-  iconType?: "plus" | "list"
+  iconType?: "plus" | "list" 
 }
 
 const QuickLinkCard = ({ title, category, icon, iconType = "plus" }: QuickLinkProps) => {
@@ -26,17 +26,18 @@ const QuickLinkCard = ({ title, category, icon, iconType = "plus" }: QuickLinkPr
 
 export default function QuickLinks() {
   const quickLinks = [
-    { title: "Tasks", category: "Sales", icon: <Plus size={20} />, iconType: "plus" },
+    // { title: "Tasks", category: "Sales", icon: <Plus size={20} />, iconType: "plus" },
     { title: "Customer Payment", category: "Sales", icon: <CreditCard size={20} />, iconType: "plus" },
     { title: "Customers", category: "Sales", icon: <Users size={20} />, iconType: "plus" },
-    { title: "Quotations", category: "Sales", icon: <FileText size={20} />, iconType: "plus" },
-    { title: "Contact Group", category: "CRM", icon: <Users size={20} />, iconType: "list" },
-    { title: "Leads", category: "CRM", icon: <Users size={20} />, iconType: "plus" },
+    // { title: "Quotations", category: "Sales", icon: <FileText size={20} />, iconType: "plus" },
+    // { title: "Contact Group", category: "CRM", icon: <Users size={20} />, iconType: "list" },
+    // { title: "Leads", category: "CRM", icon: <Users size={20} />, iconType: "plus" },
     { title: "Units Of Measurement", category: "Inventory", icon: <Package size={20} />, iconType: "list" },
-    { title: "Debit Notes", category: "Purchase", icon: <FileSpreadsheet size={20} />, iconType: "list" },
-    { title: "Purchase Order", category: "Purchase", icon: <FileText size={20} />, iconType: "list" },
+    { title: "Sales Return", category: "Sales", icon: <Users size={20} />, iconType: "plus" },
+    { title: "Purchase Return", category: "Purchase ", icon: <FileSpreadsheet size={20} />, iconType: "list" },
+    // { title: "Purchase Order", category: "Purchase", icon: <FileText size={20} />, iconType: "list" },
     { title: "Journal report", category: "Reports", icon: <BarChart size={20} />, iconType: "list" },
-    { title: "Allocate Customer Payments", category: "Sales", icon: <CreditCard size={20} />, iconType: "list" },
+    // { title: "Allocate Customer Payments", category: "Sales", icon: <CreditCard size={20} />, iconType: "list" },
   ]
 
   return (
