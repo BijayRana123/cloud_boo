@@ -17,6 +17,7 @@ import {
   Plus,
   X,
 } from "lucide-react"
+import PurchaseVoucherForm from "../forms/PurchaseVoucherForm"
 
 // Helper function for class names if you don't have cn utility
 const cn = (...classes: (string | boolean | undefined)[]) => {
@@ -35,6 +36,7 @@ interface NavItemProps {
   isActive: boolean
   isCollapsed: boolean
   subItems?: SubNavItem[]
+  onPurchaseVoucherClick?: () => void
 }
 
 interface CategoryItem {
@@ -45,7 +47,7 @@ interface CategoryItem {
   }[]
 }
 
-const NavItem = ({ icon, label, href, isActive, isCollapsed, subItems }: NavItemProps) => {
+const NavItem = ({ icon, label, href, isActive, isCollapsed, subItems, onPurchaseVoucherClick }: NavItemProps) => {
   const [isOpen, setIsOpen] = useState(false)
 
   if (!subItems) {
@@ -85,13 +87,23 @@ const NavItem = ({ icon, label, href, isActive, isCollapsed, subItems }: NavItem
       {!isCollapsed && isOpen && (
         <div className="ml-8 space-y-1">
           {subItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="block px-3 py-2 text-sm text-gray-700 rounded-md hover:bg-gray-200 transition-colors"
-            >
-              {item.label}
-            </Link>
+            item.href === "/dashboard/purchase/purchase_voucher" ? (
+              <button
+                key={item.href}
+                onClick={onPurchaseVoucherClick}
+                className="block w-full text-left px-3 py-2 text-sm text-gray-700 rounded-md hover:bg-gray-200 transition-colors"
+              >
+                {item.label}
+              </button>
+            ) : (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="block px-3 py-2 text-sm text-gray-700 rounded-md hover:bg-gray-200 transition-colors"
+              >
+                {item.label}
+              </Link>
+            )
           ))}
         </div>
       )}
@@ -102,6 +114,7 @@ const NavItem = ({ icon, label, href, isActive, isCollapsed, subItems }: NavItem
 export default function Sidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false)
   const [isCreateMenuOpen, setIsCreateMenuOpen] = useState(false)
+  const [isPurchaseVoucherOpen, setIsPurchaseVoucherOpen] = useState(false)
   const popupRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
   const pathname = usePathname()
@@ -273,13 +286,25 @@ export default function Sidebar() {
                     {category.items.map((item, itemIndex) => (
                       <div key={itemIndex} className="flex items-center">
                         <span className="text-gray-400 mr-2">+</span>
-                        <Link
-                          href={item.href}
-                          className="text-gray-700 hover:text-blue-600"
-                          onClick={() => setIsCreateMenuOpen(false)}
-                        >
-                          {item.label}
-                        </Link>
+                        {item.href === "/dashboard/purchase/purchase_voucher" ? (
+                          <button
+                            className="text-gray-700 hover:text-blue-600 text-left w-full"
+                            onClick={() => {
+                              setIsCreateMenuOpen(false)
+                              setIsPurchaseVoucherOpen(true)
+                            }}
+                          >
+                            {item.label}
+                          </button>
+                        ) : (
+                          <Link
+                            href={item.href}
+                            className="text-gray-700 hover:text-blue-600"
+                            onClick={() => setIsCreateMenuOpen(false)}
+                          >
+                            {item.label}
+                          </Link>
+                        )}
                       </div>
                     ))}
                   </div>
@@ -301,6 +326,7 @@ export default function Sidebar() {
             isActive={pathname === item.href || item.subItems?.some((subItem) => pathname === subItem.href)}
             isCollapsed={isCollapsed}
             subItems={item.subItems}
+            onPurchaseVoucherClick={() => setIsPurchaseVoucherOpen(true)}
           />
         ))}
       </nav>
@@ -315,6 +341,12 @@ export default function Sidebar() {
           {!isCollapsed && <span className="ml-2">Collapse</span>}
         </button>
       </div>
+
+      {/* Purchase Voucher Form Modal */}
+      <PurchaseVoucherForm
+        isOpen={isPurchaseVoucherOpen}
+        onClose={() => setIsPurchaseVoucherOpen(false)}
+      />
     </div>
   )
 }

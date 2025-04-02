@@ -13,38 +13,62 @@ export async function POST(request: NextRequest) {
     }
 
     const data = await request.json();
-    const { amount, type, description, category, date, company } = data;
+    const { amount, type, description, category, date, company, transactionNumber } = data;
 
-    if (!amount || !type || !description || !category || !date || !company) {
+    // Validate required fields
+    const requiredFields = ['amount', 'type', 'description', 'category', 'date', 'company'];
+    const missingFields = requiredFields.filter(field => !data[field]);
+    
+    if (missingFields.length > 0) {
       return NextResponse.json(
-        { error: 'Missing required fields' },
+        { error: `Missing required fields: ${missingFields.join(', ')}` },
         { status: 400 }
       );
     }
 
-    // Generate unique transaction number
-    const transactionCount = await Transaction.countDocuments({ company });
-    const transactionNumber = `TRX-${company.substring(0, 3).toUpperCase()}-${String(
-      transactionCount + 1
-    ).padStart(6, '0')}`;
+    // Use provided transaction number or generate a new one
+    let finalTransactionNumber = transactionNumber;
+    if (!finalTransactionNumber) {
+      const transactionCount = await Transaction.countDocuments({ company });
+      finalTransactionNumber = `TRX-${company.substring(0, 3).toUpperCase()}-${String(
+        transactionCount + 1
+      ).padStart(6, '0')}`;
+    }
 
-    // Calculate VAT and net amount
-    const { vatAmount, netAmount } = calculateNetAmount({
-      amount,
-      vatRate: 13, // Nepal's standard VAT rate
-    });
+    // Calculate VAT and net amount for applicable transactions
+    let vatAmount = 0;
+    let netAmount = amount;
+    
+    if (data.metadata?.items) {
+      const totalTax = data.metadata.items.reduce((sum: number, item: any) => {
+        const subtotal = item.qty * item.rate;
+        const discountAmount = (subtotal * item.discount) / 100;
+        return sum + ((subtotal - discountAmount) * item.tax) / 100;
+      }, 0);
+      vatAmount = totalTax;
+      netAmount = amount + totalTax;
+    }
 
     const transaction = new Transaction({
       ...data,
-      transactionNumber,
+      transactionNumber: finalTransactionNumber,
       vatAmount,
       amount: netAmount,
       createdBy: session.user.id,
     });
 
-    await transaction.save();
-
-    return NextResponse.json(transaction, { status: 201 });
+    try {
+      await transaction.save();
+      return NextResponse.json(transaction, { status: 201 });
+    } catch (saveError: any) {
+      if (saveError.code === 11000) { // Duplicate key error
+        return NextResponse.json(
+          { error: 'Transaction number already exists' },
+          { status: 409 }
+        );
+      }
+      throw saveError; // Re-throw other errors
+    }
   } catch (error) {
     console.error('Transaction creation error:', error);
     return NextResponse.json(

@@ -80,10 +80,15 @@ const transactionSchema = new mongoose.Schema({
   timestamps: true,
 });
 
-// Create compound index for efficient querying
-transactionSchema.index({ company: 1, date: -1 });
-transactionSchema.index({ transactionNumber: 1 }, { unique: true });
+// Create indexes for efficient querying
+transactionSchema.index({ company: 1, 'date.gregorian': -1 });
+// transactionSchema.index({ transactionNumber: 1 }, { unique: true });
 
-const Transaction = mongoose.models.Transaction || mongoose.model('Transaction', transactionSchema);
+let Transaction;
+try {
+  Transaction = mongoose.models.Transaction || mongoose.model('Transaction', transactionSchema);
+} catch (error) {
+  Transaction = mongoose.model('Transaction', transactionSchema);
+}
 
 export default Transaction;
